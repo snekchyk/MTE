@@ -135,8 +135,33 @@ EXPORT int run_simulation(
         if (rocket.y < 0.0) {
             double fraction = y_prev / (y_prev - rocket.y);
             
+            double vx_prev = (*out_vx)[i - 1]; 
+            double vy_prev = (*out_vy)[i - 1];
+            double ax_prev = (*out_ax)[i - 1];
+            double ay_prev = (*out_ay)[i - 1];
+            double Ep_prev = (*out_Ep)[i - 1];
+            double Ek_prev = (*out_Ek)[i - 1];
+            double m_prev  = (*out_m)[i - 1];
+            double fuel_prev = (*out_fuel)[i - 1];
+            double t_prev = (*out_t)[i - 1];
+
             rocket.x = x_prev + fraction * (rocket.x - x_prev);
             rocket.y = 0.0;
+            
+            rocket.vx = vx_prev + fraction * (rocket.vx - vx_prev);
+            rocket.vy = vy_prev + fraction * (rocket.vy - vy_prev);
+            rocket.ax = ax_prev + fraction * (rocket.ax - ax_prev);
+            rocket.ay = ay_prev + fraction * (rocket.ay - ay_prev);
+            
+            rocket.v = sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
+
+            rocket.m = m_prev + fraction * (rocket.m - m_prev);
+            rocket.fuel = fuel_prev + fraction * (rocket.fuel - fuel_prev);
+
+            rocket.Ep = Ep_prev + fraction * (rocket.Ep - Ep_prev);
+            rocket.Ek = Ek_prev + fraction * (rocket.Ek - Ek_prev);
+            
+            rocket.t = t_prev + fraction * (rocket.t - t_prev);
 
             (*out_t)[i] = rocket.t; 
             (*out_x)[i] = rocket.x; 
