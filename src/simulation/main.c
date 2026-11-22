@@ -94,8 +94,8 @@ EXPORT int run_simulation(
     *out_m = (double*)malloc(cap * sizeof(double));
     *out_fuel = (double*)malloc(cap * sizeof(double));
 
-
-    while (rocket.y >= 0.0) {
+    int max_iterations = 1000000;
+    while (rocket.y >= 0.0 && i <= max_iterations) {
         double x_prev = rocket.x;
         double y_prev = rocket.y;
 
@@ -182,6 +182,8 @@ EXPORT int run_simulation(
             printf("Simulation stopped: Rocket ran out of fuel on the ground.\n");
             break;
         }
+
+        update_telemetry(&rocket);
 
         (*out_t)[i] = rocket.t; (*out_x)[i] = rocket.x; (*out_y)[i] = rocket.y;
         (*out_vx)[i] = rocket.vx; (*out_vy)[i] = rocket.vy;
