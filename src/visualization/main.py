@@ -24,7 +24,7 @@ lib.run_simulation.argtypes = [
 # Specify the function's return type as a C integer
 lib.run_simulation.restype = ctypes.c_int
 
-print("  ---  Hello  ---  ")
+print(" --- Missile Trajectory Engine --- ")
 
 # Promt the user to input simulation parametres and parse them as float
 try:

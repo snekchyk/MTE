@@ -94,6 +94,12 @@ EXPORT int run_simulation(
     *out_m = (double*)malloc(cap * sizeof(double));
     *out_fuel = (double*)malloc(cap * sizeof(double));
 
+    FILE *file = fopen("trajectory.txt", "w");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
     int max_iterations = 1000000;
     while (rocket.y >= 0.0 && i <= max_iterations) {
         double x_prev = rocket.x;
@@ -162,6 +168,8 @@ EXPORT int run_simulation(
             rocket.Ek = Ek_prev + fraction * (rocket.Ek - Ek_prev);
             
             rocket.t = t_prev + fraction * (rocket.t - t_prev);
+            update_telemetry(&rocket);
+
 
             (*out_t)[i] = rocket.t; 
             (*out_x)[i] = rocket.x; 
@@ -174,6 +182,9 @@ EXPORT int run_simulation(
             (*out_Ek)[i] = rocket.Ek;
             (*out_m)[i] = rocket.m;
             (*out_fuel)[i] = rocket.fuel;
+
+            fprintf(file, "%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf\n", rocket.t, rocket.x, rocket.y, rocket.vx, rocket.vy, rocket.ax, rocket.ay, rocket.Ep, rocket.Ek, rocket.m, rocket.fuel);
+
             i++;
             break;
         }
@@ -183,7 +194,6 @@ EXPORT int run_simulation(
             break;
         }
 
-        update_telemetry(&rocket);
 
         (*out_t)[i] = rocket.t; (*out_x)[i] = rocket.x; (*out_y)[i] = rocket.y;
         (*out_vx)[i] = rocket.vx; (*out_vy)[i] = rocket.vy;
@@ -191,6 +201,8 @@ EXPORT int run_simulation(
         (*out_Ep)[i] = rocket.Ep; (*out_Ek)[i] = rocket.Ek;
         (*out_m)[i] = rocket.m; (*out_fuel)[i] = rocket.fuel;
         i++;
+
+        fprintf(file, "%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf\n", rocket.t, rocket.x, rocket.y, rocket.vx, rocket.vy, rocket.ax, rocket.ay, rocket.Ep, rocket.Ek, rocket.m, rocket.fuel);
     }
 
     return i;
