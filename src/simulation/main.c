@@ -29,6 +29,8 @@ typedef struct {
     //extra telemetry
     double Ep;
     double Ek;
+
+    int atmosphere_mode;
 } RocketState;
 
 #ifdef _WIN32
@@ -46,7 +48,7 @@ void update_velocity(RocketState *rocket, double *Fx, double *Fy);
 void update_position(RocketState *rocket);
 
 EXPORT int run_simulation(
-    double x0, double y0, double angle, double dry_mass, double thrust, double burn_rate, double fuel,
+    double x0, double y0, double angle, double dry_mass, double thrust, double burn_rate, double fuel, int atmosphere_mode,
     double** out_t, double** out_x, double** out_y, double** out_vx, double** out_vy, double** out_ax, double** out_ay, double** out_Ep, double** out_Ek, double** out_m, double** out_fuel
 ) {
     RocketState rocket;
@@ -73,6 +75,8 @@ EXPORT int run_simulation(
 
     rocket.Ep = 0.0;
     rocket.Ek = 0.0;
+
+    rocket.atmosphere_mode = atmosphere_mode;
 
     if (validation(&rocket) != 0) {
         printf("Simulation aborted due to invalid input.\n");
@@ -268,8 +272,13 @@ void calculate_forces(RocketState *rocket, double *Fx, double *Fy, double y0) {
         *Fy += rocket->thrust * sin(rocket->angle);
     }
 
-    if (rocket->v > 0.1) {
-        double current_ro = calculate_air_density(rocket->y);
+    if (rocket->atmosphere_mode != 0 && rocket->v > 0.1) {
+        double current_ro;
+        if (rocket->atmosphere_mode == 1) {
+            current_ro = ro;
+        } else {
+            current_ro = calculate_air_density(rocket->y);
+        }
 
         double F_drag = 0.5 * current_ro * cd * area * rocket->v * rocket->v;
 
