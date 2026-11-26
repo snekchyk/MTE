@@ -16,7 +16,7 @@ lib = ctypes.CDLL(dll_path)
 ptr_double = ctypes.POINTER(ctypes.c_double)
 # Specify input types (7 doubles) and output types (11 double pointers) for the C function
 lib.run_simulation.argtypes = [
-    ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,
+    ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_int,
 
     ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double), ctypes.POINTER(ptr_double)
 ]
@@ -52,7 +52,7 @@ m_ptr = ptr_double()
 fuel_ptr = ptr_double()
 
 ptrs = lib.run_simulation(
-    x_inp, y_inp, angle_inp, dry_m_inp, thrust_inp, burn_rate_inp, fuel_inp,
+    x_inp, y_inp, angle_inp, dry_m_inp, thrust_inp, burn_rate_inp, fuel_inp, 2,
     ctypes.byref(t_ptr), ctypes.byref(x_ptr), ctypes.byref(y_ptr),
     ctypes.byref(vx_ptr), ctypes.byref(vy_ptr), ctypes.byref(ax_ptr),
     ctypes.byref(ay_ptr), ctypes.byref(Ep_ptr), ctypes.byref(Ek_ptr),
